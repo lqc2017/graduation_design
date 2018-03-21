@@ -1,11 +1,11 @@
 --------------------------------------------------------
---  文件已创建 - 星期三-三月-14-2018   
+--  文件已创建 - 星期四-三月-22-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100021 CACHE 20 NOORDER  NOCYCLE
+   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100061 CACHE 20 NOORDER  NOCYCLE
 --------------------------------------------------------
 --  DDL for Table BASE_DIC
 --------------------------------------------------------
@@ -31,6 +31,25 @@
    (	"ID" VARCHAR2(100), 
 	"NAME" VARCHAR2(200), 
 	"CODE" VARCHAR2(100)
+   )
+--------------------------------------------------------
+--  DDL for Table DIC_QX
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."DIC_QX" 
+   (	"ID" VARCHAR2(100), 
+	"NAME" VARCHAR2(200), 
+	"CODE" VARCHAR2(100)
+   )
+--------------------------------------------------------
+--  DDL for Table DIC_QX_CZ
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."DIC_QX_CZ" 
+   (	"ID" VARCHAR2(100), 
+	"NAME" VARCHAR2(200), 
+	"CODE" VARCHAR2(100), 
+	"QX_ID" VARCHAR2(100)
    )
 --------------------------------------------------------
 --  DDL for Table DIC_WF_NODE
@@ -95,7 +114,9 @@
 	"INSTANCE_ID" VARCHAR2(100), 
 	"CREATE_TIME" DATE, 
 	"CREATE_USER_ID" VARCHAR2(100), 
-	"IS_FINISHED" VARCHAR2(1)
+	"IS_FINISHED" VARCHAR2(1), 
+	"TOWN_ID" VARCHAR2(100), 
+	"TOWN_NAME" VARCHAR2(200)
    ) 
  
 
@@ -112,6 +133,10 @@
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."CREATE_USER_ID" IS '创建人Id'
  
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."IS_FINISHED" IS '是否办结'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."TOWN_ID" IS '村镇id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."TOWN_NAME" IS '村镇名称'
 --------------------------------------------------------
 --  DDL for Table USER_INFO
 --------------------------------------------------------
@@ -303,6 +328,25 @@
  
    COMMENT ON COLUMN "CZSP"."WF_ROUTE"."DISPLAY_ORDER" IS '显示排序'
 --------------------------------------------------------
+--  DDL for View V_PLAN_INFO_DETAIL
+--------------------------------------------------------
+
+  CREATE OR REPLACE VIEW "CZSP"."V_PLAN_INFO_DETAIL" ("APP_ID", "CREATE_TIME", "CREATE_USER_ID", "CUR_NODE", "CUR_PHASE", "INSTANCE_ID", "PLAN_ID", "PLAN_NAME", "STATUS", "TOWN_NAME") AS 
+  SELECT 
+    pi.app_id,pi.create_time,pi.create_user_id,pa.cur_node,pa.cur_phase,pi.instance_id
+    ,pi.plan_id,pi.plan_name,pa.status,pi.town_name
+FROM 
+    czsp.plan_info pi left join czsp.plan_app pa on pi.app_id = pa.app_id
+--------------------------------------------------------
+--  DDL for View V_WF_NODE_DETAIL
+--------------------------------------------------------
+
+  CREATE OR REPLACE VIEW "CZSP"."V_WF_NODE_DETAIL" ("NODE_ID", "NODE_NAME", "WF_CUR_NODE", "PHASE_ID", "PHASE_NAME", "WF_CODE") AS 
+  SELECT 
+    n.node_id,n.node_name,n.wf_cur_node,p.phase_id,p.phase_name,p.wf_code
+FROM 
+    czsp.wf_node n left join czsp.wf_phase p on n.phase_id = p.phase_id
+--------------------------------------------------------
 --  DDL for Index DIC_AHTU_DEPT_PK
 --------------------------------------------------------
 
@@ -312,6 +356,16 @@
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_QX_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_QX_PK" ON "CZSP"."DIC_QX" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_QX_CZ_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_QX_CZ_PK" ON "CZSP"."DIC_QX_CZ" ("ID")
 --------------------------------------------------------
 --  DDL for Index DIC_WF_NODE_PK
 --------------------------------------------------------
@@ -376,6 +430,20 @@
   ALTER TABLE "CZSP"."DIC_AHTU_ROLE" ADD CONSTRAINT "DIC_AHTU_ROLE_PK" PRIMARY KEY ("ID") ENABLE
  
   ALTER TABLE "CZSP"."DIC_AHTU_ROLE" MODIFY ("ID" NOT NULL ENABLE)
+--------------------------------------------------------
+--  Constraints for Table DIC_QX
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."DIC_QX" ADD CONSTRAINT "DIC_QX_PK" PRIMARY KEY ("ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."DIC_QX" MODIFY ("ID" NOT NULL ENABLE)
+--------------------------------------------------------
+--  Constraints for Table DIC_QX_CZ
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."DIC_QX_CZ" ADD CONSTRAINT "DIC_QX_CZ_PK" PRIMARY KEY ("ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."DIC_QX_CZ" MODIFY ("ID" NOT NULL ENABLE)
 --------------------------------------------------------
 --  Constraints for Table DIC_WF_NODE
 --------------------------------------------------------
@@ -446,6 +514,12 @@
   ALTER TABLE "CZSP"."WF_ROUTE" MODIFY ("ROUTE_ID" NOT NULL ENABLE)
  
   ALTER TABLE "CZSP"."WF_ROUTE" ADD CONSTRAINT "WF_ROUTE_PK" PRIMARY KEY ("ROUTE_ID") ENABLE
+--------------------------------------------------------
+--  Ref Constraints for Table DIC_QX_CZ
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."DIC_QX_CZ" ADD CONSTRAINT "DIC_QX_CZ_FK1" FOREIGN KEY ("QX_ID")
+	  REFERENCES "CZSP"."DIC_QX" ("ID") ON DELETE SET NULL ENABLE
 --------------------------------------------------------
 --  Ref Constraints for Table PLAN_APP
 --------------------------------------------------------
