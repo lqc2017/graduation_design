@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  文件已创建 - 星期五-三月-23-2018   
+--  文件已创建 - 星期六-三月-24-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
@@ -120,7 +120,8 @@
 	"PLAN_AREA" NUMBER, 
 	"DESIGN_DEPARTMENT" VARCHAR2(100), 
 	"DESIGN_CONTACT_NAME" VARCHAR2(100), 
-	"DESIGN_CONTACT_WAY" VARCHAR2(100)
+	"DESIGN_CONTACT_WAY" VARCHAR2(100), 
+	"QX_ID" VARCHAR2(100)
    ) 
  
 
@@ -149,6 +150,8 @@
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."DESIGN_CONTACT_NAME" IS '设计单位联系人'
  
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."DESIGN_CONTACT_WAY" IS '设计单位联系方式'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."QX_ID" IS '区县id'
 --------------------------------------------------------
 --  DDL for Table USER_INFO
 --------------------------------------------------------
@@ -349,7 +352,7 @@
   CREATE OR REPLACE VIEW "CZSP"."V_PLAN_INFO_DETAIL" ("APP_ID", "CREATE_TIME", "CREATE_USER_ID", "CUR_NODE", "CUR_PHASE", "INSTANCE_ID", "PLAN_ID", "PLAN_NAME", "STATUS", "TOWN_NAME", "CREATE_USER_NAME", "QX_ID", "PLAN_AREA") AS 
   SELECT 
     pi.app_id,pi.create_time,pi.create_user_id,pa.cur_node,pa.cur_phase,pi.instance_id
-    ,pi.plan_id,pi.plan_name,pa.status,pi.town_name,u.name as create_user_name,u.qx_id
+    ,pi.plan_id,pi.plan_name,pa.status,pi.town_name,u.name as create_user_name,pi.qx_id
     ,pi.plan_area
 FROM 
     czsp.plan_info pi left join czsp.plan_app pa on pi.app_id = pa.app_id 
