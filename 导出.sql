@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  文件已创建 - 星期六-三月-24-2018   
+--  文件已创建 - 星期二-四月-03-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
@@ -121,7 +121,10 @@
 	"DESIGN_DEPARTMENT" VARCHAR2(100), 
 	"DESIGN_CONTACT_NAME" VARCHAR2(100), 
 	"DESIGN_CONTACT_WAY" VARCHAR2(100), 
-	"QX_ID" VARCHAR2(100)
+	"QX_ID" VARCHAR2(100), 
+	"EXPECTED_FINISH_DATE" DATE, 
+	"FINISH_DATE" DATE, 
+	"NOTE" VARCHAR2(4000)
    ) 
  
 
@@ -152,6 +155,49 @@
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."DESIGN_CONTACT_WAY" IS '设计单位联系方式'
  
    COMMENT ON COLUMN "CZSP"."PLAN_INFO"."QX_ID" IS '区县id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."EXPECTED_FINISH_DATE" IS '预计办结日期'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."FINISH_DATE" IS '实际办结日期'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_INFO"."NOTE" IS '备注'
+--------------------------------------------------------
+--  DDL for Table PLAN_OPINION
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."PLAN_OPINION" 
+   (	"NODE_ID" VARCHAR2(100), 
+	"CREATE_BY" VARCHAR2(100), 
+	"CREATE_TIME" DATE, 
+	"OPINION_CONTENT" VARCHAR2(4000), 
+	"PLAN_ID" VARCHAR2(100), 
+	"OP_TYPE" VARCHAR2(100), 
+	"PHASE_ID" VARCHAR2(100), 
+	"INSTANCE_ID" VARCHAR2(100), 
+	"UPDATE_TIME" DATE, 
+	"OPINION_ID" VARCHAR2(100)
+   ) 
+ 
+
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."NODE_ID" IS '节点id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_BY" IS '创建人'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_TIME" IS '创建时间'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."OPINION_CONTENT" IS '意见内容'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."PLAN_ID" IS '案件id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."OP_TYPE" IS '操作类型'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."PHASE_ID" IS '环节id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."INSTANCE_ID" IS '当前节点id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."UPDATE_TIME" IS '更新时间'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."OPINION_ID" IS '意见id'
 --------------------------------------------------------
 --  DDL for Table USER_INFO
 --------------------------------------------------------
@@ -272,7 +318,8 @@
 	"ROLE_ID" VARCHAR2(100), 
 	"WF_CUR_NODE" VARCHAR2(2), 
 	"IS_END" VARCHAR2(1), 
-	"IS_START" VARCHAR2(1)
+	"IS_START" VARCHAR2(1), 
+	"IS_QX_OP" VARCHAR2(1)
    ) 
  
 
@@ -289,6 +336,8 @@
    COMMENT ON COLUMN "CZSP"."WF_NODE"."IS_END" IS '是否是尾节点'
  
    COMMENT ON COLUMN "CZSP"."WF_NODE"."IS_START" IS '头节点'
+ 
+   COMMENT ON COLUMN "CZSP"."WF_NODE"."IS_QX_OP" IS '是否区县操作节点'
 --------------------------------------------------------
 --  DDL for Table WF_PHASE
 --------------------------------------------------------
@@ -349,21 +398,39 @@
 --  DDL for View V_PLAN_INFO_DETAIL
 --------------------------------------------------------
 
-  CREATE OR REPLACE VIEW "CZSP"."V_PLAN_INFO_DETAIL" ("APP_ID", "CREATE_TIME", "CREATE_USER_ID", "CUR_NODE", "CUR_PHASE", "INSTANCE_ID", "PLAN_ID", "PLAN_NAME", "STATUS", "TOWN_NAME", "CREATE_USER_NAME", "QX_ID", "PLAN_AREA") AS 
+  CREATE OR REPLACE VIEW "CZSP"."V_PLAN_INFO_DETAIL" ("APP_ID", "CREATE_TIME", "CREATE_USER_ID", "INSTANCE_ID", "PLAN_ID", "PLAN_NAME", "TOWN_NAME", "QX_ID", "PLAN_AREA", "CREATE_USER_NAME", "CUR_PHASE", "CUR_NODE", "STATUS") AS 
   SELECT 
-    pi.app_id,pi.create_time,pi.create_user_id,pa.cur_node,pa.cur_phase,pi.instance_id
-    ,pi.plan_id,pi.plan_name,pa.status,pi.town_name,u.name as create_user_name,pi.qx_id
-    ,pi.plan_area
+    pi.app_id,pi.create_time,pi.create_user_id,pi.instance_id,pi.plan_id,pi.plan_name,pi.town_name,pi.qx_id,pi.plan_area
+    ,u.name as create_user_name
+    ,pa.cur_phase,pa.cur_node,pa.status
 FROM 
-    czsp.plan_info pi left join czsp.plan_app pa on pi.app_id = pa.app_id 
+    czsp.plan_info pi 
+    left join czsp.plan_app pa on pi.app_id = pa.app_id 
     left join czsp.user_info u on pi.create_user_id = u.user_id
+--------------------------------------------------------
+--  DDL for View V_PLAN_WF_DETAIL
+--------------------------------------------------------
+
+  CREATE OR REPLACE VIEW "CZSP"."V_PLAN_WF_DETAIL" ("PLAN_ID", "PLAN_NAME", "INSTANCE_ID", "QX_ID", "CREATE_TIME", "TOWN_NAME", "TODO_USER_ID", "SIGN_USER_ID", "IF_SIGN", "IF_RETRIEVE", "SIGN_USER_NAME", "APP_ID", "CUR_NODE", "CUR_PHASE", "INSTANCE_NO", "LAST_OP_TIME", "LAST_OP_USER", "OPED_USERS", "PHASES", "STATUS") AS 
+  SELECT 
+    pi.plan_id,pi.plan_name,pi.instance_id,pi.qx_id,pi.create_time,pi.town_name
+    ,wci.todo_user_id,wci.sign_user_id,wci.if_sign,wci.if_retrieve
+    ,ui.name as sign_user_name
+    ,pa."APP_ID",pa."CUR_NODE",pa."CUR_PHASE",pa."INSTANCE_NO",pa."LAST_OP_TIME",pa."LAST_OP_USER",pa."OPED_USERS",pa."PHASES",pa."STATUS"
+FROM 
+    czsp.plan_info pi 
+    left join czsp.plan_app pa on pi.app_id = pa.app_id 
+    left join 
+    (czsp.wf_cur_instance wci left join czsp.user_info ui on wci.sign_user_id = ui.user_id )
+    on pi.instance_id = wci.instance_id
 --------------------------------------------------------
 --  DDL for View V_WF_NODE_DETAIL
 --------------------------------------------------------
 
-  CREATE OR REPLACE VIEW "CZSP"."V_WF_NODE_DETAIL" ("NODE_ID", "NODE_NAME", "WF_CUR_NODE", "PHASE_ID", "PHASE_NAME", "WF_CODE") AS 
+  CREATE OR REPLACE VIEW "CZSP"."V_WF_NODE_DETAIL" ("NODE_ID", "NODE_NAME", "WF_CUR_NODE", "IS_START", "IS_END", "PHASE_ID", "PHASE_NAME", "WF_CODE") AS 
   SELECT 
-    n.node_id,n.node_name,n.wf_cur_node,p.phase_id,p.phase_name,p.wf_code
+    n.node_id,n.node_name,n.wf_cur_node,n.is_start,n.is_end,
+    p.phase_id,p.phase_name,p.wf_code
 FROM 
     czsp.wf_node n left join czsp.wf_phase p on n.phase_id = p.phase_id
 --------------------------------------------------------
@@ -406,6 +473,11 @@ FROM
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."PLAN_INFO_PK" ON "CZSP"."PLAN_INFO" ("PLAN_ID")
+--------------------------------------------------------
+--  DDL for Index PLAN_OPINION_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."PLAN_OPINION_PK" ON "CZSP"."PLAN_OPINION" ("OPINION_ID")
 --------------------------------------------------------
 --  DDL for Index USER_INFO_PK
 --------------------------------------------------------
@@ -493,6 +565,13 @@ FROM
  
   ALTER TABLE "CZSP"."PLAN_INFO" MODIFY ("PLAN_ID" NOT NULL ENABLE)
 --------------------------------------------------------
+--  Constraints for Table PLAN_OPINION
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."PLAN_OPINION" ADD CONSTRAINT "PLAN_OPINION_PK" PRIMARY KEY ("OPINION_ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."PLAN_OPINION" MODIFY ("OPINION_ID" NOT NULL ENABLE)
+--------------------------------------------------------
 --  Constraints for Table USER_INFO
 --------------------------------------------------------
 
@@ -552,6 +631,21 @@ FROM
 
   ALTER TABLE "CZSP"."PLAN_INFO" ADD CONSTRAINT "PLAN_INFO_FK1" FOREIGN KEY ("CREATE_USER_ID")
 	  REFERENCES "CZSP"."USER_INFO" ("USER_ID") ON DELETE SET NULL ENABLE
+--------------------------------------------------------
+--  Ref Constraints for Table PLAN_OPINION
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."PLAN_OPINION" ADD CONSTRAINT "PLAN_OPINION_FK1" FOREIGN KEY ("CREATE_BY")
+	  REFERENCES "CZSP"."USER_INFO" ("USER_ID") ON DELETE SET NULL ENABLE
+ 
+  ALTER TABLE "CZSP"."PLAN_OPINION" ADD CONSTRAINT "PLAN_OPINION_FK2" FOREIGN KEY ("PLAN_ID")
+	  REFERENCES "CZSP"."PLAN_INFO" ("PLAN_ID") ON DELETE SET NULL ENABLE
+ 
+  ALTER TABLE "CZSP"."PLAN_OPINION" ADD CONSTRAINT "PLAN_OPINION_FK3" FOREIGN KEY ("NODE_ID")
+	  REFERENCES "CZSP"."WF_NODE" ("NODE_ID") ON DELETE SET NULL ENABLE
+ 
+  ALTER TABLE "CZSP"."PLAN_OPINION" ADD CONSTRAINT "PLAN_OPINION_FK4" FOREIGN KEY ("PHASE_ID")
+	  REFERENCES "CZSP"."WF_PHASE" ("PHASE_ID") ON DELETE SET NULL ENABLE
 --------------------------------------------------------
 --  Ref Constraints for Table USER_OPERATION
 --------------------------------------------------------
