@@ -1,11 +1,11 @@
 --------------------------------------------------------
---  文件已创建 - 星期二-四月-03-2018   
+--  文件已创建 - 星期五-四月-06-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100061 CACHE 20 NOORDER  NOCYCLE
+   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100101 CACHE 20 NOORDER  NOCYCLE
 --------------------------------------------------------
 --  DDL for Table BASE_DIC
 --------------------------------------------------------
@@ -68,6 +68,30 @@
    (	"ID" VARCHAR2(100), 
 	"NAME" VARCHAR2(200), 
 	"CODE" VARCHAR2(100)
+   )
+--------------------------------------------------------
+--  DDL for Table PERMISSION_OBJECT
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."PERMISSION_OBJECT" 
+   (	"O_ID" VARCHAR2(100), 
+	"OBJECT_TYPE" VARCHAR2(2)
+   ) 
+ 
+
+   COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."OBJECT_TYPE" IS '1:菜单
+2.按钮
+3.url
+'
+--------------------------------------------------------
+--  DDL for Table PERMISSION_ROLE
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."PERMISSION_ROLE" 
+   (	"URL" VARCHAR2(200), 
+	"CREATE_TIME" DATE, 
+	"ROLE_ID" VARCHAR2(100), 
+	"OBJECT_ID" VARCHAR2(100)
    )
 --------------------------------------------------------
 --  DDL for Table PLAN_APP
@@ -206,7 +230,7 @@
    (	"USER_ID" VARCHAR2(100), 
 	"NAME" VARCHAR2(100), 
 	"DEPARTMENT_ID" VARCHAR2(100), 
-	"ROLE_ID" VARCHAR2(100), 
+	"ROLE_ID" VARCHAR2(200), 
 	"QX_ID" VARCHAR2(100), 
 	"PHONE_NUMBER" VARCHAR2(100)
    ) 
@@ -444,25 +468,30 @@ FROM
 
   CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
 --------------------------------------------------------
---  DDL for Index DIC_QX_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "CZSP"."DIC_QX_PK" ON "CZSP"."DIC_QX" ("ID")
---------------------------------------------------------
 --  DDL for Index DIC_QX_CZ_PK
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_QX_CZ_PK" ON "CZSP"."DIC_QX_CZ" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_QX_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_QX_PK" ON "CZSP"."DIC_QX" ("ID")
 --------------------------------------------------------
 --  DDL for Index DIC_WF_NODE_PK
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_WF_NODE_PK" ON "CZSP"."DIC_WF_NODE" ("ID")
 --------------------------------------------------------
---  DDL for Index TABLE1_PK
+--  DDL for Index PERMISSION_OBJECT_PK
 --------------------------------------------------------
 
-  CREATE UNIQUE INDEX "CZSP"."TABLE1_PK" ON "CZSP"."DIC_WF_PHASE" ("ID")
+  CREATE UNIQUE INDEX "CZSP"."PERMISSION_OBJECT_PK" ON "CZSP"."PERMISSION_OBJECT" ("O_ID")
+--------------------------------------------------------
+--  DDL for Index PERMISSION_ROLE_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."PERMISSION_ROLE_PK" ON "CZSP"."PERMISSION_ROLE" ("ROLE_ID", "OBJECT_ID")
 --------------------------------------------------------
 --  DDL for Index PLAN_APP_PK
 --------------------------------------------------------
@@ -478,6 +507,11 @@ FROM
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."PLAN_OPINION_PK" ON "CZSP"."PLAN_OPINION" ("OPINION_ID")
+--------------------------------------------------------
+--  DDL for Index TABLE1_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."TABLE1_PK" ON "CZSP"."DIC_WF_PHASE" ("ID")
 --------------------------------------------------------
 --  DDL for Index USER_INFO_PK
 --------------------------------------------------------
@@ -551,6 +585,22 @@ FROM
  
   ALTER TABLE "CZSP"."DIC_WF_PHASE" ADD CONSTRAINT "TABLE1_PK" PRIMARY KEY ("ID") ENABLE
 --------------------------------------------------------
+--  Constraints for Table PERMISSION_OBJECT
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."PERMISSION_OBJECT" ADD CONSTRAINT "PERMISSION_OBJECT_PK" PRIMARY KEY ("O_ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."PERMISSION_OBJECT" MODIFY ("O_ID" NOT NULL ENABLE)
+--------------------------------------------------------
+--  Constraints for Table PERMISSION_ROLE
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."PERMISSION_ROLE" ADD CONSTRAINT "PERMISSION_ROLE_PK" PRIMARY KEY ("ROLE_ID", "OBJECT_ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."PERMISSION_ROLE" MODIFY ("ROLE_ID" NOT NULL ENABLE)
+ 
+  ALTER TABLE "CZSP"."PERMISSION_ROLE" MODIFY ("OBJECT_ID" NOT NULL ENABLE)
+--------------------------------------------------------
 --  Constraints for Table PLAN_APP
 --------------------------------------------------------
 
@@ -619,6 +669,15 @@ FROM
 
   ALTER TABLE "CZSP"."DIC_QX_CZ" ADD CONSTRAINT "DIC_QX_CZ_FK1" FOREIGN KEY ("QX_ID")
 	  REFERENCES "CZSP"."DIC_QX" ("ID") ON DELETE SET NULL ENABLE
+--------------------------------------------------------
+--  Ref Constraints for Table PERMISSION_ROLE
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."PERMISSION_ROLE" ADD CONSTRAINT "PERMISSION_ROLE_FK1" FOREIGN KEY ("ROLE_ID")
+	  REFERENCES "CZSP"."DIC_AHTU_ROLE" ("ID") ON DELETE CASCADE ENABLE
+ 
+  ALTER TABLE "CZSP"."PERMISSION_ROLE" ADD CONSTRAINT "PERMISSION_ROLE_FK2" FOREIGN KEY ("OBJECT_ID")
+	  REFERENCES "CZSP"."PERMISSION_OBJECT" ("O_ID") ON DELETE CASCADE ENABLE
 --------------------------------------------------------
 --  Ref Constraints for Table PLAN_APP
 --------------------------------------------------------
