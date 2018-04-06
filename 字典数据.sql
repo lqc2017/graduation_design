@@ -1,6 +1,15 @@
 --------------------------------------------------------
 --  文件已创建 - 星期五-四月-06-2018   
 --------------------------------------------------------
+REM INSERTING into CZSP.BASE_DIC
+SET DEFINE OFF;
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('20000','DIC_QX');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('18100','DIC_WF_PHASE');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('18110','DIC_WF_NODE');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('19100','DIC_AHTU_DEPT');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('19110','DIC_AHTU_ROLE');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('30000','DIC_PERMISSION_TYPE');
+Insert into CZSP.BASE_DIC (DIC_ID,TABLE_NAME) values ('20010','DIC_QX_CZ');
 REM INSERTING into CZSP.DIC_AHTU_DEPT
 SET DEFINE OFF;
 Insert into CZSP.DIC_AHTU_DEPT (ID,NAME,CODE) values ('CZC','村镇处',null);
@@ -20,6 +29,11 @@ Insert into CZSP.DIC_AHTU_ROLE (ID,NAME,CODE) values ('BGS_JBR','办公室经办人',n
 Insert into CZSP.DIC_AHTU_ROLE (ID,NAME,CODE) values ('QX_JBR','区县经办人',null);
 Insert into CZSP.DIC_AHTU_ROLE (ID,NAME,CODE) values ('CGB_JBR','成果办经办人',null);
 Insert into CZSP.DIC_AHTU_ROLE (ID,NAME,CODE) values ('ADMIN','管理员',null);
+REM INSERTING into CZSP.DIC_PERMISSION_TYPE
+SET DEFINE OFF;
+Insert into CZSP.DIC_PERMISSION_TYPE (ID,NAME,CODE) values ('01','菜单',null);
+Insert into CZSP.DIC_PERMISSION_TYPE (ID,NAME,CODE) values ('02','按钮',null);
+Insert into CZSP.DIC_PERMISSION_TYPE (ID,NAME,CODE) values ('03','页面',null);
 REM INSERTING into CZSP.DIC_QX
 SET DEFINE OFF;
 Insert into CZSP.DIC_QX (ID,NAME,CODE) values ('00','市局','SJ');

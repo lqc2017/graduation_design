@@ -33,6 +33,15 @@
 	"CODE" VARCHAR2(100)
    )
 --------------------------------------------------------
+--  DDL for Table DIC_PERMISSION_TYPE
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."DIC_PERMISSION_TYPE" 
+   (	"ID" VARCHAR2(100), 
+	"NAME" VARCHAR2(100), 
+	"CODE" VARCHAR2(100)
+   )
+--------------------------------------------------------
 --  DDL for Table DIC_QX
 --------------------------------------------------------
 
@@ -75,14 +84,19 @@
 
   CREATE TABLE "CZSP"."PERMISSION_OBJECT" 
    (	"O_ID" VARCHAR2(100), 
-	"OBJECT_TYPE" VARCHAR2(2)
+	"OBJECT_TYPE" VARCHAR2(2), 
+	"OBJECT_NAME" VARCHAR2(100)
    ) 
  
 
+   COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."O_ID" IS '对象主键'
+ 
    COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."OBJECT_TYPE" IS '1:菜单
 2.按钮
 3.url
 '
+ 
+   COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."OBJECT_NAME" IS '对象名称'
 --------------------------------------------------------
 --  DDL for Table PERMISSION_ROLE
 --------------------------------------------------------
@@ -513,6 +527,11 @@ FROM
 
   CREATE UNIQUE INDEX "CZSP"."TABLE1_PK" ON "CZSP"."DIC_WF_PHASE" ("ID")
 --------------------------------------------------------
+--  DDL for Index TABLE1_PK1
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."TABLE1_PK1" ON "CZSP"."DIC_PERMISSION_TYPE" ("ID")
+--------------------------------------------------------
 --  DDL for Index USER_INFO_PK
 --------------------------------------------------------
 
@@ -556,6 +575,13 @@ FROM
   ALTER TABLE "CZSP"."DIC_AHTU_ROLE" ADD CONSTRAINT "DIC_AHTU_ROLE_PK" PRIMARY KEY ("ID") ENABLE
  
   ALTER TABLE "CZSP"."DIC_AHTU_ROLE" MODIFY ("ID" NOT NULL ENABLE)
+--------------------------------------------------------
+--  Constraints for Table DIC_PERMISSION_TYPE
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."DIC_PERMISSION_TYPE" ADD CONSTRAINT "DIC_PERMISSION_TYPE_PK" PRIMARY KEY ("ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."DIC_PERMISSION_TYPE" MODIFY ("ID" NOT NULL ENABLE)
 --------------------------------------------------------
 --  Constraints for Table DIC_QX
 --------------------------------------------------------
