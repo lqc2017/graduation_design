@@ -1,11 +1,11 @@
 --------------------------------------------------------
---  文件已创建 - 星期五-四月-06-2018   
+--  文件已创建 - 星期一-四月-09-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100101 CACHE 20 NOORDER  NOCYCLE
+   CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100121 CACHE 20 NOORDER  NOCYCLE
 --------------------------------------------------------
 --  DDL for Table BASE_DIC
 --------------------------------------------------------
@@ -85,7 +85,8 @@
   CREATE TABLE "CZSP"."PERMISSION_OBJECT" 
    (	"O_ID" VARCHAR2(100), 
 	"OBJECT_TYPE" VARCHAR2(2), 
-	"OBJECT_NAME" VARCHAR2(100)
+	"OBJECT_NAME" VARCHAR2(100), 
+	"CREATE_TIME" DATE
    ) 
  
 
@@ -97,14 +98,14 @@
 '
  
    COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."OBJECT_NAME" IS '对象名称'
+ 
+   COMMENT ON COLUMN "CZSP"."PERMISSION_OBJECT"."CREATE_TIME" IS '创建时间'
 --------------------------------------------------------
 --  DDL for Table PERMISSION_ROLE
 --------------------------------------------------------
 
   CREATE TABLE "CZSP"."PERMISSION_ROLE" 
-   (	"URL" VARCHAR2(200), 
-	"CREATE_TIME" DATE, 
-	"ROLE_ID" VARCHAR2(100), 
+   (	"ROLE_ID" VARCHAR2(100), 
 	"OBJECT_ID" VARCHAR2(100)
    )
 --------------------------------------------------------
@@ -246,7 +247,8 @@
 	"DEPARTMENT_ID" VARCHAR2(100), 
 	"ROLE_ID" VARCHAR2(200), 
 	"QX_ID" VARCHAR2(100), 
-	"PHONE_NUMBER" VARCHAR2(100)
+	"PHONE_NUMBER" VARCHAR2(100), 
+	"SEX" CHAR(1)
    ) 
  
 
@@ -261,6 +263,8 @@
    COMMENT ON COLUMN "CZSP"."USER_INFO"."QX_ID" IS '区县id'
  
    COMMENT ON COLUMN "CZSP"."USER_INFO"."PHONE_NUMBER" IS '电话号码'
+ 
+   COMMENT ON COLUMN "CZSP"."USER_INFO"."SEX" IS '性别：0男1女'
 --------------------------------------------------------
 --  DDL for Table USER_OPERATION
 --------------------------------------------------------
@@ -482,6 +486,11 @@ FROM
 
   CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
 --------------------------------------------------------
+--  DDL for Index DIC_PERMISSION_TYPE_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_PERMISSION_TYPE_PK" ON "CZSP"."DIC_PERMISSION_TYPE" ("ID")
+--------------------------------------------------------
 --  DDL for Index DIC_QX_CZ_PK
 --------------------------------------------------------
 
@@ -496,6 +505,11 @@ FROM
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_WF_NODE_PK" ON "CZSP"."DIC_WF_NODE" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_WF_PHASE_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_WF_PHASE_PK" ON "CZSP"."DIC_WF_PHASE" ("ID")
 --------------------------------------------------------
 --  DDL for Index PERMISSION_OBJECT_PK
 --------------------------------------------------------
@@ -521,16 +535,6 @@ FROM
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."PLAN_OPINION_PK" ON "CZSP"."PLAN_OPINION" ("OPINION_ID")
---------------------------------------------------------
---  DDL for Index TABLE1_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "CZSP"."TABLE1_PK" ON "CZSP"."DIC_WF_PHASE" ("ID")
---------------------------------------------------------
---  DDL for Index TABLE1_PK1
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "CZSP"."TABLE1_PK1" ON "CZSP"."DIC_PERMISSION_TYPE" ("ID")
 --------------------------------------------------------
 --  DDL for Index USER_INFO_PK
 --------------------------------------------------------
@@ -617,6 +621,8 @@ FROM
   ALTER TABLE "CZSP"."PERMISSION_OBJECT" ADD CONSTRAINT "PERMISSION_OBJECT_PK" PRIMARY KEY ("O_ID") ENABLE
  
   ALTER TABLE "CZSP"."PERMISSION_OBJECT" MODIFY ("O_ID" NOT NULL ENABLE)
+ 
+  ALTER TABLE "CZSP"."PERMISSION_OBJECT" MODIFY ("OBJECT_NAME" NOT NULL ENABLE)
 --------------------------------------------------------
 --  Constraints for Table PERMISSION_ROLE
 --------------------------------------------------------
