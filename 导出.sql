@@ -1,11 +1,52 @@
 --------------------------------------------------------
---  文件已创建 - 星期一-四月-09-2018   
+--  文件已创建 - 星期五-四月-13-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
 --------------------------------------------------------
 
    CREATE SEQUENCE  "CZSP"."SEQ_USER_ID"  MINVALUE 100001 MAXVALUE 999999 INCREMENT BY 1 START WITH 100121 CACHE 20 NOORDER  NOCYCLE
+--------------------------------------------------------
+--  DDL for Table ACCOUNT_INFO
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."ACCOUNT_INFO" 
+   (	"USER_NAME" VARCHAR2(100), 
+	"PASSWORD" VARCHAR2(100), 
+	"IS_AVAILABLE" CHAR(1), 
+	"UPDATE_TIME" DATE, 
+	"CREATE_TIME" DATE
+   ) 
+ 
+
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_INFO"."USER_NAME" IS '用户名'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_INFO"."PASSWORD" IS '密码'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_INFO"."IS_AVAILABLE" IS '是否可用'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_INFO"."UPDATE_TIME" IS '更新时间'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_INFO"."CREATE_TIME" IS '创建时间'
+--------------------------------------------------------
+--  DDL for Table ACCOUNT_USER
+--------------------------------------------------------
+
+  CREATE TABLE "CZSP"."ACCOUNT_USER" 
+   (	"USER_NAME" VARCHAR2(100), 
+	"USER_ID" VARCHAR2(100), 
+	"CREATE_TIME" DATE, 
+	"IS_DEFAULT" CHAR(1)
+   ) 
+ 
+
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_USER"."USER_NAME" IS '账户主键'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_USER"."USER_ID" IS '用户id'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_USER"."CREATE_TIME" IS '关联时间'
+ 
+   COMMENT ON COLUMN "CZSP"."ACCOUNT_USER"."IS_DEFAULT" IS '是否默认'
 --------------------------------------------------------
 --  DDL for Table BASE_DIC
 --------------------------------------------------------
@@ -476,6 +517,16 @@ FROM
 FROM 
     czsp.wf_node n left join czsp.wf_phase p on n.phase_id = p.phase_id
 --------------------------------------------------------
+--  DDL for Index ACCOUNT_INFO_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."ACCOUNT_INFO_PK" ON "CZSP"."ACCOUNT_INFO" ("USER_NAME")
+--------------------------------------------------------
+--  DDL for Index ACCOUNT_USER_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."ACCOUNT_USER_PK" ON "CZSP"."ACCOUNT_USER" ("USER_NAME", "USER_ID")
+--------------------------------------------------------
 --  DDL for Index DIC_AHTU_DEPT_PK
 --------------------------------------------------------
 
@@ -560,6 +611,24 @@ FROM
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."WF_ROUTE_PK" ON "CZSP"."WF_ROUTE" ("ROUTE_ID")
+--------------------------------------------------------
+--  Constraints for Table ACCOUNT_INFO
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."ACCOUNT_INFO" ADD CONSTRAINT "ACCOUNT_INFO_PK" PRIMARY KEY ("USER_NAME") ENABLE
+ 
+  ALTER TABLE "CZSP"."ACCOUNT_INFO" MODIFY ("USER_NAME" NOT NULL ENABLE)
+ 
+  ALTER TABLE "CZSP"."ACCOUNT_INFO" MODIFY ("IS_AVAILABLE" NOT NULL ENABLE)
+--------------------------------------------------------
+--  Constraints for Table ACCOUNT_USER
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."ACCOUNT_USER" ADD CONSTRAINT "ACCOUNT_USER_PK" PRIMARY KEY ("USER_NAME", "USER_ID") ENABLE
+ 
+  ALTER TABLE "CZSP"."ACCOUNT_USER" MODIFY ("USER_NAME" NOT NULL ENABLE)
+ 
+  ALTER TABLE "CZSP"."ACCOUNT_USER" MODIFY ("USER_ID" NOT NULL ENABLE)
 --------------------------------------------------------
 --  Constraints for Table BASE_DIC
 --------------------------------------------------------
@@ -695,6 +764,15 @@ FROM
   ALTER TABLE "CZSP"."WF_ROUTE" MODIFY ("ROUTE_ID" NOT NULL ENABLE)
  
   ALTER TABLE "CZSP"."WF_ROUTE" ADD CONSTRAINT "WF_ROUTE_PK" PRIMARY KEY ("ROUTE_ID") ENABLE
+--------------------------------------------------------
+--  Ref Constraints for Table ACCOUNT_USER
+--------------------------------------------------------
+
+  ALTER TABLE "CZSP"."ACCOUNT_USER" ADD CONSTRAINT "ACCOUNT_USER_FK1" FOREIGN KEY ("USER_ID")
+	  REFERENCES "CZSP"."USER_INFO" ("USER_ID") ON DELETE CASCADE ENABLE
+ 
+  ALTER TABLE "CZSP"."ACCOUNT_USER" ADD CONSTRAINT "ACCOUNT_USER_FK2" FOREIGN KEY ("USER_NAME")
+	  REFERENCES "CZSP"."ACCOUNT_INFO" ("USER_NAME") ON DELETE CASCADE ENABLE
 --------------------------------------------------------
 --  Ref Constraints for Table DIC_QX_CZ
 --------------------------------------------------------
