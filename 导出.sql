@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  文件已创建 - 星期五-四月-13-2018   
+--  文件已创建 - 星期日-四月-15-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
@@ -527,15 +527,15 @@ FROM
 
   CREATE UNIQUE INDEX "CZSP"."ACCOUNT_USER_PK" ON "CZSP"."ACCOUNT_USER" ("USER_NAME", "USER_ID")
 --------------------------------------------------------
---  DDL for Index DIC_AHTU_DEPT_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_DEPT_PK" ON "CZSP"."DIC_AHTU_DEPT" ("ID")
---------------------------------------------------------
 --  DDL for Index DIC_AHTU_ROLE_PK
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_AHTU_DEPT_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_DEPT_PK" ON "CZSP"."DIC_AHTU_DEPT" ("ID")
 --------------------------------------------------------
 --  DDL for Index DIC_PERMISSION_TYPE_PK
 --------------------------------------------------------
