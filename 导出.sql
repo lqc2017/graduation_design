@@ -1,5 +1,5 @@
 --------------------------------------------------------
---  文件已创建 - 星期日-四月-15-2018   
+--  文件已创建 - 星期六-四月-28-2018   
 --------------------------------------------------------
 --------------------------------------------------------
 --  DDL for Sequence SEQ_USER_ID
@@ -255,13 +255,14 @@
 	"PHASE_ID" VARCHAR2(100), 
 	"INSTANCE_ID" VARCHAR2(100), 
 	"UPDATE_TIME" DATE, 
-	"OPINION_ID" VARCHAR2(100)
+	"OPINION_ID" VARCHAR2(100), 
+	"CREATE_USER_NAME" VARCHAR2(100)
    ) 
  
 
    COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."NODE_ID" IS '节点id'
  
-   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_BY" IS '创建人'
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_BY" IS '创建人id'
  
    COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_TIME" IS '创建时间'
  
@@ -278,6 +279,8 @@
    COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."UPDATE_TIME" IS '更新时间'
  
    COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."OPINION_ID" IS '意见id'
+ 
+   COMMENT ON COLUMN "CZSP"."PLAN_OPINION"."CREATE_USER_NAME" IS '创建人'
 --------------------------------------------------------
 --  DDL for Table USER_INFO
 --------------------------------------------------------
@@ -527,15 +530,15 @@ FROM
 
   CREATE UNIQUE INDEX "CZSP"."ACCOUNT_USER_PK" ON "CZSP"."ACCOUNT_USER" ("USER_NAME", "USER_ID")
 --------------------------------------------------------
---  DDL for Index DIC_AHTU_ROLE_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
---------------------------------------------------------
 --  DDL for Index DIC_AHTU_DEPT_PK
 --------------------------------------------------------
 
   CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_DEPT_PK" ON "CZSP"."DIC_AHTU_DEPT" ("ID")
+--------------------------------------------------------
+--  DDL for Index DIC_AHTU_ROLE_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "CZSP"."DIC_AHTU_ROLE_PK" ON "CZSP"."DIC_AHTU_ROLE" ("ID")
 --------------------------------------------------------
 --  DDL for Index DIC_PERMISSION_TYPE_PK
 --------------------------------------------------------
